@@ -10,6 +10,7 @@ import (
 	"net/http"
 	"os"
 	"github.com/gocolly/colly"
+	"gopkg.in/cheggaaa/pb.v1"
 )
 
 
@@ -49,6 +50,9 @@ func RandStringRunes(n int) string {
 
 func main() {
 
+	count := 1000
+	bar := pb.StartNew(count)
+
 	c := colly.NewCollector()
 	host := "https://2ch.hk"
 	dir := "/Users/dimashulhin/2ch/webm/"
@@ -59,13 +63,19 @@ func main() {
 		link := e.Attr("href")
 		if strings.Contains(link, ".webm") {
 			fmt.Println(link)
+			for i := 0; i < count; i++ {
+				bar.Increment()
+				time.Sleep(time.Millisecond)
+			}
 			fetchAndSave(host + link, dir, RandStringRunes(20))
+			bar.FinishPrint("The End!")
 	
 		}// true
 	
 	})
 
 	c.Visit("https://2ch.hk/b")
+
 
 
 }
